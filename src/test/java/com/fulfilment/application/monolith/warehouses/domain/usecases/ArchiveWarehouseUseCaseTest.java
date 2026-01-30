@@ -72,4 +72,15 @@ public class ArchiveWarehouseUseCaseTest {
         assertNotNull(warehouse.getArchivedAt());
         verify(warehouseRepository).update(warehouse);
     }
+    
+   
+    @Test
+    void testArchiveWarehouse_NullWarehouse() {
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> archiveWarehouseUseCase.archive(null));
+
+        assertEquals("Warehouse cannot be null", ex.getMessage());
+        verify(warehouseRepository, never()).update(any());
+    }
+
 }

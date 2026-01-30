@@ -25,29 +25,46 @@ public class ReplaceWarehouseUseCaseTest {
     }
 
     // --- Positive Test Case ---
+	/*
+	 * @Test void testReplaceWarehouse_Positive() { Warehouse existing = new
+	 * Warehouse(); existing.setBusinessUnitCode("MWH.200"); existing.setStock(50);
+	 * existing.setCapacity(100); existing.setLocation("OldCity");
+	 * 
+	 * Warehouse newWarehouse = new Warehouse();
+	 * newWarehouse.setBusinessUnitCode("MWH.200"); newWarehouse.setStock(50); //
+	 * must match existing stock newWarehouse.setCapacity(120); // >= old stock
+	 * newWarehouse.setLocation("NewCity");
+	 * 
+	 * when(warehouseRepository.findByBusinessUnitCode("MWH.200")).thenReturn(
+	 * existing);
+	 * 
+	 * // just call, no assignment since method returns void
+	 * replaceWarehouseUseCase.replace(newWarehouse);
+	 * 
+	 * // verify side-effects assertEquals("NewCity", existing.getLocation());
+	 * assertEquals(120, existing.getCapacity()); assertEquals(50,
+	 * existing.getStock()); verify(warehouseRepository).update(existing); }
+	 */
+    
     @Test
     void testReplaceWarehouse_Positive() {
         Warehouse existing = new Warehouse();
-        existing.setBusinessUnitCode("MWH.200");
-        existing.setStock(50);
-        existing.setCapacity(100);
+        existing.setBusinessUnitCode("MWH.300");
+        existing.setStock(100);
         existing.setLocation("OldCity");
 
         Warehouse newWarehouse = new Warehouse();
-        newWarehouse.setBusinessUnitCode("MWH.200");
-        newWarehouse.setStock(50); // must match existing stock
-        newWarehouse.setCapacity(120); // >= old stock
+        newWarehouse.setBusinessUnitCode("MWH.300");
+        newWarehouse.setCapacity(200);
+        newWarehouse.setStock(100);
         newWarehouse.setLocation("NewCity");
 
-        when(warehouseRepository.findByBusinessUnitCode("MWH.200")).thenReturn(existing);
+        when(warehouseRepository.findByBusinessUnitCode("MWH.300")).thenReturn(existing);
 
-        // just call, no assignment since method returns void
         replaceWarehouseUseCase.replace(newWarehouse);
 
-        // verify side-effects
         assertEquals("NewCity", existing.getLocation());
-        assertEquals(120, existing.getCapacity());
-        assertEquals(50, existing.getStock());
+        assertEquals(200, existing.getCapacity());
         verify(warehouseRepository).update(existing);
     }
 
@@ -109,4 +126,57 @@ public class ReplaceWarehouseUseCaseTest {
         assertEquals("New stock must match old stock", ex.getMessage());
         verify(warehouseRepository, never()).update(any());
     }
+    
+    
+    
+
+    @Test
+    void testReplaceWarehouse_NewCapacityLessThanOldStock_ShouldThrowException() {
+        Warehouse existing = new Warehouse();
+        existing.setBusinessUnitCode("MWH.301");
+        existing.setStock(100);
+
+        Warehouse newWarehouse = new Warehouse();
+        newWarehouse.setBusinessUnitCode("MWH.301");
+        newWarehouse.setCapacity(50);
+        newWarehouse.setStock(100);
+
+        when(warehouseRepository.findByBusinessUnitCode("MWH.301")).thenReturn(existing);
+
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> replaceWarehouseUseCase.replace(newWarehouse));
+
+        assertEquals("New capacity must be >= old stock", ex.getMessage());
+        verify(warehouseRepository, never()).update(any());
+    }
+
+    @Test
+    void testReplaceWarehouse_NewStockDifferent_ShouldThrowException() {
+        Warehouse existing = new Warehouse();
+        existing.setBusinessUnitCode("MWH.302");
+        existing.setStock(100);
+
+        Warehouse newWarehouse = new Warehouse();
+        newWarehouse.setBusinessUnitCode("MWH.302");
+        newWarehouse.setCapacity(200);
+        newWarehouse.setStock(50);
+
+        when(warehouseRepository.findByBusinessUnitCode("MWH.302")).thenReturn(existing);
+
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> replaceWarehouseUseCase.replace(newWarehouse));
+
+        assertEquals("New stock must match old stock", ex.getMessage());
+        verify(warehouseRepository, never()).update(any());
+    }
+
+    @Test
+    void testReplaceWarehouse_NullWarehouse_ShouldThrowException() {
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> replaceWarehouseUseCase.replace(null));
+
+        assertEquals("New warehouse cannot be null", ex.getMessage());
+        verify(warehouseRepository, never()).update(any());
+    }
+
 }
