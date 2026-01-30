@@ -1,5 +1,7 @@
 package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
+import java.time.LocalDateTime;
+
 import org.jboss.logging.Logger;
 
 import com.fulfilment.application.monolith.warehouses.domain.models.Location;
@@ -24,7 +26,7 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
 
     @Override
     public void create(Warehouse warehouse) {
-    	LOGGER.info("CreateWarehouseUseCase.create");
+        LOGGER.info("CreateWarehouseUseCase.create");
         if (warehouse == null) {
             throw new IllegalArgumentException("Warehouse cannot be null");
         }
@@ -35,22 +37,26 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
         if (existing != null) {
             throw new IllegalArgumentException("BusinessUnitCode already exists: " + warehouse.getBusinessUnitCode());
         }
+
         LOGGER.info("CreateWarehouseUseCase.create() Location must be valid");
         // Rule 2: Location must be valid
         Location location = locationResolver.resolveByIdentifier(warehouse.getLocation());
         if (location == null) {
             throw new IllegalArgumentException("Invalid location: " + warehouse.getLocation());
         }
+
         LOGGER.info("CreateWarehouseUseCase.create() Capacity must be >= stock");
         // Rule 3: Capacity must be >= stock
         if (warehouse.getCapacity() < warehouse.getStock()) {
             throw new IllegalArgumentException("Capacity must be greater than or equal to stock");
         }
+
         LOGGER.info("CreateWarehouseUseCase.create() Capacity must not exceed location’s max capacity");
         // Rule 4: Capacity must not exceed location’s max capacity
         if (warehouse.getCapacity() > location.getMaxCapacity()) {
             throw new IllegalArgumentException("Capacity exceeds location max capacity");
         }
+
         LOGGER.info("CreateWarehouseUseCase.create() Max warehouses per location not exceeded");
         // Rule 5: Max warehouses per location not exceeded
         long count = warehouseStore.getAll().stream()
@@ -60,7 +66,10 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
             throw new IllegalArgumentException("Max warehouses exceeded for location: " + location.getIdentification());
         }
 
-        // ✅ If all rules pass, persist the warehouse
+        // ✅ Always set createdAt before persisting
+        warehouse.setCreatedAt(LocalDateTime.now());
+
+        // Persist the warehouse
         warehouseStore.create(warehouse);
     }
 }

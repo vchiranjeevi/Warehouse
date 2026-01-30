@@ -44,6 +44,10 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
         if (!newWarehouse.getStock().equals(existing.getStock())) {
             throw new IllegalArgumentException("New stock must match old stock");
         }
+        existing.setLocation(newWarehouse.getLocation());
+        existing.setCapacity(newWarehouse.getCapacity());
+        existing.setStock(newWarehouse.getStock());
+
 
         // ✅ If rules pass, update warehouse
         warehouseStore.update(newWarehouse);
