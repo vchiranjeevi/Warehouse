@@ -25,7 +25,7 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(payload)
         .when()
-          .post("/stores")
+          .post("/store")
         .then()
           .statusCode(201)
           .body("storeCode", equalTo("STR.100"))
@@ -38,7 +38,7 @@ public class StoreResourceTest {
     void testGetStoreEndpoint_NotFound() {
         given()
         .when()
-          .get("/stores/STR.999")
+          .get("/store/STR.999")
         .then()
           .statusCode(404);
     }
@@ -59,7 +59,7 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(payload)
         .when()
-          .post("/stores")
+          .post("/store")
         .then()
           .statusCode(201);
 
@@ -77,7 +77,7 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/stores/STR.101")
+          .put("/store/STR.101")
         .then()
           .statusCode(200)
           .body("name", equalTo("Fashion World Updated"))
@@ -101,14 +101,14 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(payload)
         .when()
-          .post("/stores")
+          .post("/store")
         .then()
           .statusCode(201);
 
         // Delete
         given()
         .when()
-          .delete("/stores/STR.102")
+          .delete("/store/STR.102")
         .then()
           .statusCode(204);
     }
