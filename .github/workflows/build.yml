@@ -18,13 +18,11 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      # 👇 This step ensures target/quarkus-app/ exists
+      # Build Quarkus app as uber-jar (single jar, no lib/app folders)
       - name: Build Quarkus app
-        run: ./mvnw clean package -Dquarkus.package.type=fast-jar
+        run: ./mvnw clean package -Dquarkus.package.type=uber-jar
 
-      - name: Show target contents
-        run: ls -R target
-
+      # Build Docker image using the simplified Dockerfile
       - name: Build Docker image
         run: docker build -f src/main/docker/Dockerfile.jvm -t myorg/warehouse-api:${{ github.sha }} .
 
