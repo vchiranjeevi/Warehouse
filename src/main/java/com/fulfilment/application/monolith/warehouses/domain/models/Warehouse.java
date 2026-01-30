@@ -1,6 +1,8 @@
 package com.fulfilment.application.monolith.warehouses.domain.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
@@ -11,6 +13,9 @@ import java.time.LocalDateTime;
 public class Warehouse {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;   // auto-generated primary key
+    
     @Column(name = "businessUnitCode", nullable = false, unique = true)
     private String businessUnitCode;  // primary key
 
