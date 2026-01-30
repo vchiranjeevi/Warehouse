@@ -32,12 +32,14 @@ public class ProductResource {
 
   @GET
   public List<Product> get() {
+	  LOGGER.info("ProductResource.get()");
     return productRepository.listAll(Sort.by("name"));
   }
 
   @GET
   @Path("{id}")
   public Product getSingle(Long id) {
+	  LOGGER.info("ProductResource.getSingle()");
     Product entity = productRepository.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Product with id of " + id + " does not exist.", 404);
@@ -48,6 +50,7 @@ public class ProductResource {
   @POST
   @Transactional
   public Response create(Product product) {
+	  LOGGER.info("ProductResource.create()");
     if (product.id != null) {
       throw new WebApplicationException("Id was invalidly set on request.", 422);
     }
@@ -60,6 +63,7 @@ public class ProductResource {
   @Path("{id}")
   @Transactional
   public Product update(Long id, Product product) {
+	  LOGGER.info("ProductResource.update()");
     if (product.name == null) {
       throw new WebApplicationException("Product Name was not set on request.", 422);
     }
@@ -84,6 +88,7 @@ public class ProductResource {
   @Path("{id}")
   @Transactional
   public Response delete(Long id) {
+	  LOGGER.info("ProductResource.delete()");
     Product entity = productRepository.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Product with id of " + id + " does not exist.", 404);
@@ -99,7 +104,7 @@ public class ProductResource {
 
     @Override
     public Response toResponse(Exception exception) {
-      LOGGER.error("Failed to handle request", exception);
+      LOGGER.error("Failed to handle request in ProductResource.toResponse()", exception);
 
       int code = 500;
       if (exception instanceof WebApplicationException) {

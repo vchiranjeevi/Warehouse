@@ -39,6 +39,7 @@ public class StoreResource {
   @GET
   @Path("{id}")
   public Store getSingle(Long id) {
+	  LOGGER.info("StoreResource.getSingle");
     Store entity = Store.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
@@ -49,6 +50,7 @@ public class StoreResource {
   @POST
   @Transactional
   public Response create(Store store) {
+	  LOGGER.info("StoreResource.create");
     if (store.id != null) {
       throw new WebApplicationException("Id was invalidly set on request.", 422);
     }
@@ -64,6 +66,7 @@ public class StoreResource {
   @Path("{id}")
   @Transactional
   public Store update(Long id, Store updatedStore) {
+	  LOGGER.info("StoreResource.update");
     if (updatedStore.name == null) {
       throw new WebApplicationException("Store Name was not set on request.", 422);
     }
@@ -86,6 +89,7 @@ public class StoreResource {
   @Path("{id}")
   @Transactional
   public Store patch(Long id, Store updatedStore) {
+	  LOGGER.info("StoreResource.patch");
     if (updatedStore.name == null) {
       throw new WebApplicationException("Store Name was not set on request.", 422);
     }
@@ -113,6 +117,7 @@ public class StoreResource {
   @Path("{id}")
   @Transactional
   public Response delete(Long id) {
+	  LOGGER.info("StoreResource.delete");
     Store entity = Store.findById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
