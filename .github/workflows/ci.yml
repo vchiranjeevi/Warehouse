@@ -22,6 +22,7 @@ jobs:
         run: mvn clean verify
 
       - name: Upload Jacoco coverage report
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: jacoco-report
