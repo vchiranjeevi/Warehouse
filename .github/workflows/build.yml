@@ -20,7 +20,7 @@ jobs:
 
       # Build Quarkus app as uber-jar (single jar, no lib/app folders)
       - name: Build Quarkus app
-        run: ./mvnw clean package -Dquarkus.package.type=uber-jar
+        run: ./mvnw clean package -Dquarkus.package.type=uber-jar -X
 
       - name: Show target contents
         run: ls -R target
