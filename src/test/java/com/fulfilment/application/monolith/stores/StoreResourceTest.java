@@ -10,35 +10,42 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class StoreResourceTest {
 
-    @Test
-    void testCreateStoreEndpoint() {
-        String payload = """
-            {
-              "storeCode": "STR.100",
-              "name": "Electronics Hub",
-              "location": "Dubai",
-              "capacity": 200
-            }
-            """;
+	@Test
+	void testCreateStoreEndpoint() {
+	    String payload = """
+	        {
+	          "name": "Electronics Hub",
+	          "location": "Dubai",
+	          "capacity": 200
+	        }
+	        """;
 
-        given()
-          .contentType("application/json")
-          .body(payload)
-        .when()
-          .post("/store")
-        .then()
-          .statusCode(201)
-          .body("storeCode", equalTo("STR.100"))
-          .body("name", equalTo("Electronics Hub"))
-          .body("location", equalTo("Dubai"))
-          .body("capacity", equalTo(200));
-    }
+	    // Create store and extract numeric id
+	    Long id = given()
+	      .contentType("application/json")
+	      .body(payload)
+	    .when()
+	      .post("/store")
+	    .then()
+	      .statusCode(201)
+	      .extract().path("id");
 
+	    // Verify GET works with numeric id
+	    given()
+	    .when()
+	      .get("/store/" + id)
+	    .then()
+	      .statusCode(200)
+	      .body("name", equalTo("Electronics Hub"))
+	      .body("location", equalTo("Dubai"))
+	      .body("capacity", equalTo(200));
+	}
+	
     @Test
     void testGetStoreEndpoint_NotFound() {
         given()
         .when()
-          .get("/store/STR.999")
+          .get("/store/999")
         .then()
           .statusCode(404);
     }
@@ -77,7 +84,7 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/store/STR.101")
+          .put("/store/101")
         .then()
           .statusCode(200)
           .body("name", equalTo("Fashion World Updated"))
@@ -108,7 +115,7 @@ public class StoreResourceTest {
         // Delete
         given()
         .when()
-          .delete("/store/STR.102")
+          .delete("/store/102")
         .then()
           .statusCode(204);
     }
