@@ -4,14 +4,22 @@ import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+
 import java.math.BigDecimal;
 
 @Entity
 @Cacheable
 public class Product {
 
-  @Id @GeneratedValue public Long id;
+  //@Id @GeneratedValue public Long id;
+  
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+  @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 1)
+  private Long id;
 
   @Column(length = 40, unique = true)
   public String name;
@@ -29,4 +37,46 @@ public class Product {
   public Product(String name) {
     this.name = name;
   }
+
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public BigDecimal getPrice() {
+		return price;
+	}
+	
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+	
+	public int getStock() {
+		return stock;
+	}
+	
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+  
+  
 }

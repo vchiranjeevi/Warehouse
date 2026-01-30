@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import java.time.LocalDateTime;
@@ -11,11 +12,18 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "warehouse")
 public class Warehouse {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "warehouse_seq")
+	@SequenceGenerator(name = "warehouse_seq", sequenceName = "warehouse_seq", allocationSize = 1)
+	private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;   // auto-generated primary key
-    
+	/*
+	 * @Id
+	 * 
+	 * @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id; //
+	 * auto-generated primary key
+	 */    
     @Column(name = "businessUnitCode", nullable = false, unique = true)
     private String businessUnitCode;  // primary key
 

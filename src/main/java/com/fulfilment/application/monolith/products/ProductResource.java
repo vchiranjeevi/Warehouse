@@ -51,7 +51,7 @@ public class ProductResource {
   @Transactional
   public Response create(Product product) {
 	  LOGGER.info("ProductResource.create()");
-    if (product.id != null) {
+    if (product.getId() != null) {
       throw new WebApplicationException("Id was invalidly set on request.", 422);
     }
 
