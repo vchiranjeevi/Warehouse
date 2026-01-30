@@ -69,6 +69,9 @@ paths:
           description: Warehouse unit archived
         '404':
           description: Warehouse unit not found
+        '500':
+          description: Internal server error
+
 
   /warehouse/{businessUnitCode}/replacement:
     post:
@@ -122,3 +125,8 @@ components:
         stock:
           type: integer
           example: 50
+        archivedAt:
+          type: string
+          format: date-time
+          example: "2026-01-30T09:46:00Z"
+

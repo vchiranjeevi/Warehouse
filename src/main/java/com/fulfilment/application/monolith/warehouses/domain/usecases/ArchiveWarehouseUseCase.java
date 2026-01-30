@@ -5,19 +5,27 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.ArchiveWareho
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.time.LocalDateTime;
+
 @ApplicationScoped
 public class ArchiveWarehouseUseCase implements ArchiveWarehouseOperation {
 
-  private final WarehouseStore warehouseStore;
+    private final WarehouseStore warehouseStore;
 
-  public ArchiveWarehouseUseCase(WarehouseStore warehouseStore) {
-    this.warehouseStore = warehouseStore;
-  }
+    public ArchiveWarehouseUseCase(WarehouseStore warehouseStore) {
+        this.warehouseStore = warehouseStore;
+    }
 
-  @Override
-  public void archive(Warehouse warehouse) {
-    // TODO implement this method
+    @Override
+    public void archive(Warehouse warehouse) {
+        if (warehouse == null) {
+            throw new IllegalArgumentException("Warehouse cannot be null");
+        }
 
-    warehouseStore.update(warehouse);
-  }
+        // Business rule: mark warehouse as archived
+        warehouse.setArchivedAt(LocalDateTime.now());
+
+        // Persist the change
+        warehouseStore.update(warehouse);
+    }
 }
