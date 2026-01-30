@@ -21,7 +21,7 @@ public class StoreResourceTest {
 	        """;
 
 	    // Create store and extract numeric id
-	    Long id = given()
+	    Integer id = given()
 	      .contentType("application/json")
 	      .body(payload)
 	    .when()
@@ -61,7 +61,7 @@ public class StoreResourceTest {
             }
             """;
 
-        Long id = given()
+        Integer id = given()
           .contentType("application/json")
           .body(payload)
         .when()
@@ -102,7 +102,7 @@ public class StoreResourceTest {
             }
             """;
 
-        Long id = given()
+        Integer id = given()
           .contentType("application/json")
           .body(payload)
         .when()
