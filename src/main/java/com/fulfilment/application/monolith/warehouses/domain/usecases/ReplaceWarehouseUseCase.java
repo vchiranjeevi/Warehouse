@@ -21,22 +21,22 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
 
     @Override
     public void replace(Warehouse newWarehouse) {
-    	LOGGER.info("ReplaceWarehouseUseCase.replace()");
+        LOGGER.info("ReplaceWarehouseUseCase.replace()");
         if (newWarehouse == null) {
-        	LOGGER.info("ReplaceWarehouseUseCase.replace() newWarehouse is null..." + newWarehouse);
+            LOGGER.info("ReplaceWarehouseUseCase.replace() newWarehouse is null..." + newWarehouse);
             throw new IllegalArgumentException("New warehouse cannot be null");
         }
 
         // Find the existing warehouse by businessUnitCode
         Warehouse existing = warehouseStore.findByBusinessUnitCode(newWarehouse.getBusinessUnitCode());
         if (existing == null) {
-        	LOGGER.info("ReplaceWarehouseUseCase.replace() existing is null.." + existing);
+            LOGGER.info("ReplaceWarehouseUseCase.replace() existing is null.." + existing);
             throw new IllegalArgumentException("Warehouse not found for code: " + newWarehouse.getBusinessUnitCode());
         }
 
         // Rule 1: New capacity must accommodate old stock
         if (newWarehouse.getCapacity() < existing.getStock()) {
-        	LOGGER.info("ReplaceWarehouseUseCase.replace() New capacity must accommodate old stock..");
+            LOGGER.info("ReplaceWarehouseUseCase.replace() New capacity must accommodate old stock..");
             throw new IllegalArgumentException("New capacity must be >= old stock");
         }
 
@@ -44,12 +44,13 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
         if (!newWarehouse.getStock().equals(existing.getStock())) {
             throw new IllegalArgumentException("New stock must match old stock");
         }
+
+        // ✅ Copy updated fields into existing
         existing.setLocation(newWarehouse.getLocation());
         existing.setCapacity(newWarehouse.getCapacity());
         existing.setStock(newWarehouse.getStock());
 
-
-        // ✅ If rules pass, update warehouse
-        warehouseStore.update(newWarehouse);
+        // ✅ Persist the updated existing warehouse
+        warehouseStore.update(existing);
     }
 }

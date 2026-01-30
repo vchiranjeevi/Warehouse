@@ -66,7 +66,7 @@ public class CreateWarehouseUseCaseTest {
         Exception ex = assertThrows(IllegalArgumentException.class,
                 () -> createWarehouseUseCase.create(warehouse));
 
-        assertEquals("Capacity must be >= stock", ex.getMessage());
+        assertEquals("Capacity must be greater than or equal to stock", ex.getMessage());
         verify(warehouseRepository, never()).create(any());
     }
 
