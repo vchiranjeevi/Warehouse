@@ -38,7 +38,7 @@ public class WarehouseResourceImplTest {
     void testGetWarehouseEndpoint_NotFound() {
         given()
         .when()
-          .get("/warehouse/MWH.999")
+          .get("/warehouse/999")
         .then()
           .statusCode(404);
     }
@@ -66,7 +66,7 @@ public class WarehouseResourceImplTest {
         // Then archive
         given()
         .when()
-          .delete("/warehouse/MWH.701")
+          .delete("/warehouse/701")
         .then()
           .statusCode(204);
     }
@@ -105,7 +105,7 @@ public class WarehouseResourceImplTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/warehouse/MWH.702")
+          .put("/warehouse/702")
         .then()
           .statusCode(200)
           .body("location", equalTo("AbuDhabi"))

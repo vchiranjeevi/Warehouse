@@ -55,25 +55,24 @@ public class StoreResourceTest {
         // First create
         String payload = """
             {
-              "storeCode": "STR.101",
               "name": "Fashion World",
               "location": "Dubai",
               "capacity": 150
             }
             """;
 
-        given()
+        Long id = given()
           .contentType("application/json")
           .body(payload)
         .when()
           .post("/store")
         .then()
-          .statusCode(201);
+          .statusCode(201)
+          .extract().path("id");
 
-        // Update
+        // Update using numeric id
         String newPayload = """
             {
-              "storeCode": "STR.101",
               "name": "Fashion World Updated",
               "location": "AbuDhabi",
               "capacity": 250
@@ -84,7 +83,7 @@ public class StoreResourceTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/store/101")
+          .put("/store/" + id)
         .then()
           .statusCode(200)
           .body("name", equalTo("Fashion World Updated"))
@@ -92,32 +91,33 @@ public class StoreResourceTest {
           .body("capacity", equalTo(250));
     }
 
+
     @Test
     void testDeleteStoreEndpoint() {
-        // First create
         String payload = """
             {
-              "storeCode": "STR.102",
               "name": "Book Haven",
               "location": "Dubai",
               "capacity": 100
             }
             """;
 
-        given()
+        Long id = given()
           .contentType("application/json")
           .body(payload)
         .when()
           .post("/store")
         .then()
-          .statusCode(201);
+          .statusCode(201)
+          .extract().path("id");
 
-        // Delete
+        // Delete using numeric id
         given()
         .when()
-          .delete("/store/102")
+          .delete("/store/" + id)
         .then()
           .statusCode(204);
     }
+
 }
 
