@@ -26,7 +26,11 @@ public class ArchiveWarehouseUseCase implements ArchiveWarehouseOperation {
         if (warehouse == null) {
             throw new IllegalArgumentException("Warehouse cannot be null");
         }
-
+        // Verify it exists in store
+        Warehouse existing = warehouseStore.findByBusinessUnitCode(warehouse.getBusinessUnitCode());
+        if (existing == null) {
+            throw new IllegalArgumentException("Warehouse not found: " + warehouse.getBusinessUnitCode());
+        }
         // Business rule: mark warehouse as archived
         warehouse.setArchivedAt(LocalDateTime.now());
 

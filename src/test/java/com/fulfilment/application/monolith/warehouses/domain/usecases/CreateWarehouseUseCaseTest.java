@@ -1,7 +1,9 @@
 package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
+import com.fulfilment.application.monolith.warehouses.domain.models.Location;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
+import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,12 +20,21 @@ public class CreateWarehouseUseCaseTest {
     @Mock
     private WarehouseRepository warehouseRepository;
 
+    @Mock
+    private LocationResolver locationResolver;   // ✅ add this mock
+
     @InjectMocks
     private CreateWarehouseUseCase createWarehouseUseCase;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Create a dummy Location object with all 3 params
+        Location dummyLocation = new Location("LOC-001", 1, 1);
+
+        // Stub resolver to return this Location whenever called
+        when(locationResolver.resolveByIdentifier(anyString())).thenReturn(dummyLocation);
     }
 
     // --- Positive Test Case ---
@@ -37,7 +48,6 @@ public class CreateWarehouseUseCaseTest {
 
         doNothing().when(warehouseRepository).create(any(Warehouse.class));
 
-        // just call, no assignment
         createWarehouseUseCase.create(warehouse);
 
         assertNotNull(warehouse.getCreatedAt(), "CreatedAt should be set");
@@ -71,10 +81,8 @@ public class CreateWarehouseUseCaseTest {
 
         doNothing().when(warehouseRepository).create(any(Warehouse.class));
 
-        // just call, no assignment since method returns void
         createWarehouseUseCase.create(warehouse);
 
-        // verify side-effects
         assertEquals(0, warehouse.getCapacity());
         assertEquals(0, warehouse.getStock());
         assertNotNull(warehouse.getCreatedAt(), "CreatedAt should be set");
