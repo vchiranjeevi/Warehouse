@@ -1,20 +1,32 @@
 package com.fulfilment.application.monolith.warehouses.domain.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "warehouse")
 public class Warehouse {
 
-    // unique identifier
-    private String businessUnitCode;
+    @Id
+    @Column(name = "businessUnitCode", nullable = false, unique = true)
+    private String businessUnitCode;  // primary key
 
+    @Column(name = "location")
     private String location;
 
+    @Column(name = "capacity")
     private Integer capacity;
 
+    @Column(name = "stock")
     private Integer stock;
 
+    @Column(name = "createdAt")
     private LocalDateTime createdAt;
 
+    @Column(name = "archivedAt")
     private LocalDateTime archivedAt;
 
     // --- Getters and Setters ---
