@@ -31,7 +31,7 @@ public class CreateWarehouseUseCaseTest {
         MockitoAnnotations.openMocks(this);
 
         // Create a dummy Location object with all 3 params
-        Location dummyLocation = new Location("LOC-001", 1, 1);
+        Location dummyLocation = new Location("LOC-001", 1000, 10);
 
         // Stub resolver to return this Location whenever called
         when(locationResolver.resolveByIdentifier(anyString())).thenReturn(dummyLocation);
