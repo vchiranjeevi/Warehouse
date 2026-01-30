@@ -1,7 +1,9 @@
 
 package com.warehouse.api.beans;
 
+import java.util.Date;
 import javax.annotation.processing.Generated;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -12,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "businessUnitCode",
     "location",
     "capacity",
-    "stock"
+    "stock",
+    "archivedAt"
 })
 @Generated("jsonschema2pojo")
 public class Warehouse {
@@ -27,6 +30,9 @@ public class Warehouse {
     private Integer capacity;
     @JsonProperty("stock")
     private Integer stock;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonProperty("archivedAt")
+    private Date archivedAt;
 
     @JsonProperty("id")
     public String getId() {
@@ -76,6 +82,16 @@ public class Warehouse {
     @JsonProperty("stock")
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    @JsonProperty("archivedAt")
+    public Date getArchivedAt() {
+        return archivedAt;
+    }
+
+    @JsonProperty("archivedAt")
+    public void setArchivedAt(Date archivedAt) {
+        this.archivedAt = archivedAt;
     }
 
 }
