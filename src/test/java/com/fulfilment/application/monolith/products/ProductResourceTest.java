@@ -10,18 +10,41 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class ProductResourceTest {
 
-    //@Test
-    void testGetExistingProduct_TONSTAD() {
-        // TONSTAD seeded with id=1, stock=10
-        given()
-        .when()
-          .get("/product/1")
-        .then()
-          .statusCode(404)
-          .body("name", equalTo("TONSTAD"))
-          .body("stock", equalTo(10));
-    }
+	/*
+	 * @Test void testGetExistingProduct_TONSTAD() { // TONSTAD seeded with id=1,
+	 * stock=10 given() .when() .get("/product/1") .then() .statusCode(200)
+	 * .body("name", equalTo("TONSTAD")) .body("stock", equalTo(10)); }
+	 */
 
+	@Test
+	void testGetExistingProduct_TONSTAD() {
+	    String payload = """
+	        {
+	          "name": "TONSTAD",
+	          "description": "Wardrobe",
+	          "price": 1200.0,
+	          "stock": 10
+	        }
+	        """;
+
+	    Integer id = given()
+	      .contentType("application/json")
+	      .body(payload)
+	    .when()
+	      .post("/product")
+	    .then()
+	      .statusCode(201)
+	      .extract().path("id");
+
+	    given()
+	    .when()
+	      .get("/product/" + id)
+	    .then()
+	      .statusCode(200)
+	      .body("name", equalTo("TONSTAD"))
+	      .body("stock", equalTo(10));
+	}
+	
     @Test
     void testGetExistingProduct_KALLAX() {
         // KALLAX seeded with id=2, stock=5
