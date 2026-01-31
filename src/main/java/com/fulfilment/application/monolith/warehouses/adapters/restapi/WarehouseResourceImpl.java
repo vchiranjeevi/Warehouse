@@ -6,6 +6,9 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.ArchiveWarehouseUseCase;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.CreateWarehouseUseCase;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.ReplaceWarehouseUseCase;
 import com.warehouse.api.WarehouseResource;
 import com.warehouse.api.beans.Warehouse; // API bean
 
@@ -21,6 +24,15 @@ public class WarehouseResourceImpl implements WarehouseResource {
 
     @Inject
     private WarehouseRepository warehouseRepository;
+    
+    @Inject 
+    private CreateWarehouseUseCase createWarehouseUseCase;
+
+    @Inject 
+    private ArchiveWarehouseUseCase archiveWarehouseUseCase;
+    
+    @Inject 
+    private ReplaceWarehouseUseCase replaceWarehouseUseCase;
 
     @Override
     public List<Warehouse> listAllWarehousesUnits() {
@@ -43,8 +55,8 @@ public class WarehouseResourceImpl implements WarehouseResource {
         domainWarehouse.setStock(data.getStock());
         domainWarehouse.setCreatedAt(LocalDateTime.now());
 
-        warehouseRepository.create(domainWarehouse);
-
+        createWarehouseUseCase.create(domainWarehouse);
+        //warehouseRepository.create(domainWarehouse);
         return toWarehouseResponse(domainWarehouse);
     }
 
@@ -71,7 +83,8 @@ public class WarehouseResourceImpl implements WarehouseResource {
             throw new IllegalArgumentException("Warehouse not found for id: " + id);
         }
         warehouse.setArchivedAt(LocalDateTime.now());
-        warehouseRepository.update(warehouse);
+        //warehouseRepository.update(warehouse);
+        archiveWarehouseUseCase.archive(warehouse);
     }
 
     @Override
@@ -96,8 +109,9 @@ public class WarehouseResourceImpl implements WarehouseResource {
         existing.setLocation(data.getLocation());
         existing.setCapacity(data.getCapacity());
         existing.setStock(data.getStock());
-
-        warehouseRepository.update(existing);
+        
+        replaceWarehouseUseCase.replace(existing);
+        //warehouseRepository.update(existing);
         return toWarehouseResponse(existing);
     }
 
