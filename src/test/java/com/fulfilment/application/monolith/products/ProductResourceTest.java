@@ -134,7 +134,7 @@ public class ProductResourceTest {
           .statusCode(404);
     }
 
-    //@Test
+    @Test
     void testListProductsEndpoint() {
         given()
         .when()
@@ -142,7 +142,7 @@ public class ProductResourceTest {
         .then()
           .statusCode(200)
           .body("$", isA(java.util.List.class))
-          .body("name", hasItems("BESTA", "KALLAX Updated")); // seeded names
+          .body("name", hasItems("BESTÅ", "KALLAX Updated")); // seeded names
     }
 
     @Test
