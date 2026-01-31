@@ -1,4 +1,4 @@
-package com.fulfillment.application.monolith.exception;
+package com.fulfilment.application.monolith.exception;
 import java.util.Map;
 
 import jakarta.ws.rs.core.Response;
