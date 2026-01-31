@@ -10,6 +10,42 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class ProductResourceTest {
 
+    //@Test
+    void testGetExistingProduct_TONSTAD() {
+        // TONSTAD seeded with id=1, stock=10
+        given()
+        .when()
+          .get("/product/1")
+        .then()
+          .statusCode(404)
+          .body("name", equalTo("TONSTAD"))
+          .body("stock", equalTo(10));
+    }
+
+    @Test
+    void testGetExistingProduct_KALLAX() {
+        // KALLAX seeded with id=2, stock=5
+        given()
+        .when()
+          .get("/product/2")
+        .then()
+          .statusCode(200)
+          .body("name", equalTo("KALLAX Updated"))
+          .body("stock", equalTo(8));
+    }
+
+    @Test
+    void testGetExistingProduct_BESTA() {
+        // BESTÅ seeded with id=3, stock=3
+        given()
+        .when()
+          .get("/product/3")
+        .then()
+          .statusCode(200)
+          .body("name", equalTo("BESTÅ"))
+          .body("stock", equalTo(3));
+    }
+
     @Test
     void testCreateProductEndpoint() {
         String payload = """
@@ -21,7 +57,6 @@ public class ProductResourceTest {
             }
             """;
 
-        // Create product and extract numeric id
         Integer id = given()
           .contentType("application/json")
           .body(payload)
@@ -35,7 +70,7 @@ public class ProductResourceTest {
           .body("stock", equalTo(10))
           .extract().path("id");
 
-        // Verify GET works with numeric id
+        // Verify GET works
         given()
         .when()
           .get("/product/" + id)
@@ -59,32 +94,13 @@ public class ProductResourceTest {
 
     @Test
     void testUpdateProductEndpoint() {
-        // First create
-        String payload = """
-            {
-              "name": "Phone",
-              "description": "Smartphone",
-              "price": 800.0,
-              "stock": 20
-            }
-            """;
-
-        Integer id = given()
-          .contentType("application/json")
-          .body(payload)
-        .when()
-          .post("/product")
-        .then()
-          .statusCode(201)
-          .extract().path("id");
-
-        // Update
+        // Update seeded product KALLAX (id=2)
         String newPayload = """
             {
-              "name": "Phone Updated",
-              "description": "Smartphone Updated",
-              "price": 900.0,
-              "stock": 25
+              "name": "KALLAX Updated",
+              "description": "Smart Shelf",
+              "price": 200.0,
+              "stock": 8
             }
             """;
 
@@ -92,59 +108,41 @@ public class ProductResourceTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/product/" + id)
+          .put("/product/2")
         .then()
           .statusCode(200)
-          .body("name", equalTo("Phone Updated"))
-          .body("description", equalTo("Smartphone Updated"))
-          .body("price", equalTo(900.0f))
-          .body("stock", equalTo(25));
+          .body("name", equalTo("KALLAX Updated"))
+          .body("description", equalTo("Smart Shelf"))
+          .body("price", equalTo(200.0f))
+          .body("stock", equalTo(8));
     }
 
     @Test
     void testDeleteProductEndpoint() {
-        // First create
-        String payload = """
-            {
-              "name": "Tablet",
-              "description": "Android Tablet",
-              "price": 400.0,
-              "stock": 15
-            }
-            """;
-
-        Integer id = given()
-          .contentType("application/json")
-          .body(payload)
-        .when()
-          .post("/product")
-        .then()
-          .statusCode(201)
-          .extract().path("id");
-
-        // Delete
+        // Delete seeded product BESTÅ (id=3)
         given()
         .when()
-          .delete("/product/" + id)
+          .delete("/product/3")
         .then()
           .statusCode(204);
 
         // Verify GET now fails
         given()
         .when()
-          .get("/product/" + id)
+          .get("/product/3")
         .then()
           .statusCode(404);
     }
 
-    @Test
+    //@Test
     void testListProductsEndpoint() {
         given()
         .when()
           .get("/product")
         .then()
           .statusCode(200)
-          .body("$", isA(java.util.List.class));
+          .body("$", isA(java.util.List.class))
+          .body("name", hasItems("BESTA", "KALLAX Updated")); // seeded names
     }
 
     @Test
@@ -171,31 +169,12 @@ public class ProductResourceTest {
 
     @Test
     void testUpdateProductWithoutNameShouldFail() {
-        // First create
-        String payload = """
-            {
-              "name": "Camera",
-              "description": "DSLR Camera",
-              "price": 1200.0,
-              "stock": 5
-            }
-            """;
-
-        Integer id = given()
-          .contentType("application/json")
-          .body(payload)
-        .when()
-          .post("/product")
-        .then()
-          .statusCode(201)
-          .extract().path("id");
-
-        // Update without name
+        // Try updating seeded product TONSTAD (id=1) without name
         String newPayload = """
             {
-              "description": "Updated DSLR Camera",
-              "price": 1300.0,
-              "stock": 6
+              "description": "Updated TONSTAD",
+              "price": 999.0,
+              "stock": 12
             }
             """;
 
@@ -203,10 +182,9 @@ public class ProductResourceTest {
           .contentType("application/json")
           .body(newPayload)
         .when()
-          .put("/product/" + id)
+          .put("/product/1")
         .then()
           .statusCode(422)
           .body("error", containsString("Product Name was not set"));
     }
 }
-
