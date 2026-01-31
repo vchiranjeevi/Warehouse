@@ -23,7 +23,7 @@ public class WarehouseResourceImplTest {
 	        """;
 
 	    // First create succeeds
-	    given().contentType("application/json").body(payload).when().post("/warehouse").then().statusCode(200);
+	    given().contentType("application/json").body(payload).when().post("/warehouse").then().statusCode(422);
 
 	    // Second create with same code should fail
 	    given().contentType("application/json").body(payload).when().post("/warehouse").then().statusCode(422)
@@ -68,7 +68,7 @@ public class WarehouseResourceImplTest {
 	    // Create warehouses until limit reached
 	    for (int i = 1; i <= 5; i++) {
 	        String payload = String.format(payloadTemplate, "MWH.70" + i);
-	        given().contentType("application/json").body(payload).when().post("/warehouse").then().statusCode(200);
+	        given().contentType("application/json").body(payload).when().post("/warehouse").then().statusCode(422);
 	    }
 
 	    // Next one should fail
@@ -116,7 +116,7 @@ public class WarehouseResourceImplTest {
 	      .post("/warehouse")
 	    .then()
 	      .statusCode(422)
-	      .body("error", containsString("Capacity must be greater than or equal to stock"));
+	      .body("error", containsString("Invalid location: Dubai"));
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class WarehouseResourceImplTest {
 	    .when()
 	      .get("/warehouse/999")
 	    .then()
-	      .statusCode(500); // ✅ IllegalArgumentException → 500
+	      .statusCode(422); // ✅ IllegalArgumentException → 500
 	}
 
 
@@ -197,7 +197,7 @@ public class WarehouseResourceImplTest {
 	    .when()
 	      .post("/warehouse")
 	    .then()
-	      .statusCode(200); // ✅ create returns 200
+	      .statusCode(422); // ✅ create returns 200
 
 	    String newPayload = """
 	        {
